@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Web3 from 'web3'; // Import web3.js
-
 const AddStudentButton = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState(''); // Name
@@ -17,205 +16,71 @@ const AddStudentButton = () => {
   const closeModal = () => setShowModal(false);
 
   // Function to handle adding a student using web3.js
+  const getUserAccount = async () => {
+    if (window.ethereum) {
+      try {
+        const web3 = new Web3(window.ethereum);
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        const accounts = await web3.eth.getAccounts();
+        return accounts[0];
+      } catch (error) {
+        console.error("Error connecting to MetaMask:", error);
+        return null;
+      }
+    } else {
+      console.warn("MetaMask not detected. Please install MetaMask.");
+      return null;
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // Request account access if needed
+      // console.table(window.ethereum)
       if (window.ethereum) {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
 
         // Set up web3.js provider
-        const web3 = new Web3(window.ethereum);
+        
+        const web3 = new Web3("https://sepolia.infura.io/v3/e1114b387d1d4a93aea29b45020c1164");
 
         // Set up the contract instance (replace with your deployed contract address and ABI)
-        const contractAddress = "0xd9145CCE52D386f254917e481eB44e9943F39138"; // Add your contract address here
-        const contractABI = [
-          // Add your contract ABI here
-          [
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_rollnum",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_gender",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_batch",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_department",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_branch",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_hall",
-        "type": "string"
-      }
-    ],
-    "name": "addStudent",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "rollnum",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "gender",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "batch",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "department",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "branch",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "hall",
-        "type": "string"
-      }
-    ],
-    "name": "StudentAdded",
-    "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "getAllStudentRollNumbers",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_rollnum",
-        "type": "uint256"
-      }
-    ],
-    "name": "getStudent",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "gender",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "batch",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "department",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "branch",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "hall",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getTotalStudents",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  }
-]
-        ];
+        const contractAddress = "0x4De5170Da8B074ebd2580c63dD607e1aDDCEC484"; // Add your contract address here
+        const contractABI = [{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"rollnum","type":"uint256"},{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":false,"internalType":"string","name":"gender","type":"string"},{"indexed":false,"internalType":"uint256","name":"batch","type":"uint256"},{"indexed":false,"internalType":"string","name":"department","type":"string"},{"indexed":false,"internalType":"string","name":"branch","type":"string"},{"indexed":false,"internalType":"uint256","name":"hall","type":"uint256"}],"name":"StudentAdded","type":"event"},{"inputs":[{"internalType":"uint256","name":"_rollnum","type":"uint256"},{"internalType":"string","name":"_name","type":"string"},{"internalType":"string","name":"_gender","type":"string"},{"internalType":"uint256","name":"_batch","type":"uint256"},{"internalType":"string","name":"_department","type":"string"},{"internalType":"string","name":"_branch","type":"string"},{"internalType":"uint256","name":"_hall","type":"uint256"}],"name":"addStudent","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllStudentRollNumbers","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_rollnum","type":"uint256"}],"name":"getStudent","outputs":[{"components":[{"internalType":"uint256","name":"rollnum","type":"uint256"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"gender","type":"string"},{"internalType":"uint256","name":"batch","type":"uint256"},{"internalType":"string","name":"department","type":"string"},{"internalType":"string","name":"branch","type":"string"},{"internalType":"uint256","name":"hall","type":"uint256"}],"internalType":"struct StudentRegistry.Student","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getTotalStudents","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]
 
         const contract = new web3.eth.Contract(contractABI, contractAddress);
-
+        
         // Get the user's account
-        const accounts = await web3.eth.getAccounts();
-        const account = accounts[0];
-
+        const account = await getUserAccount();
+        console.log(account)
         // Send the transaction to add a student
-        await contract.methods
-          .addStudent(
-            searchRoll,
-            searchTerm,
-            searchGender,
-            searchBatch,
-            searchDepartment,
-            searchBranch,
-            searchHall
-          )
-          .send({ from: account });
-
+        console.log(contract.methods);
+      //   const gasEstimate = await contract.methods
+      // .addStudent(
+      //   searchRoll,
+      //     searchTerm,
+      //     searchGender,
+      //     searchBatch,
+      //     searchDepartment,
+      //     searchBranch,
+      //     searchHall
+      // )
+      // .estimateGas({ from: account });
+      //   await contract.methods.addStudent(
+      //     searchRoll,
+      //       searchTerm,
+      //       searchGender,
+      //       searchBatch,
+      //       searchDepartment,
+      //       searchBranch,
+      //       searchHall
+      //   ).send({ from: account, gas: gasEstimate });;
+      const gasEstimate = await contract.methods
+      .getTotalStudents()
+      .estimateGas({ from: account });
+      console.log(gasEstimate)
+      // web3.eth.accounts.wallet.add("0x32572bfdc5a3ac6a24477f601fe1631f09676500238a8eba0028d17e255138ce");
+        await contract.methods.getTotalStudents().send({ from: account ,gas:300000});;
+          console.log(420)
         // Clear the form after submission
         setSearchTerm('');
         setRollnum('');
